@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AsyncAutocomplete Component with AlpineJS</title>
+  </head>
+  <body>
+    <div class="container is-max-desktop p-4">
+      <h1 class="title has-text-centered">AsyncAutocomplete</h1>
+      <form x-data="myform" @submit.prevent="onSubmit()">
+        <div
+          class="is-relative mb-5"
+          x-data="asyncautocomplete('https://dummyjson.com/products', 'products')"
+          @click.outside="onClear()"
+        >
+          <div
+            class="is-flex is-justify-content-space-between is-align-items-center"
+          >
+            <p>Product</p>
+            <a href="#" class="is-size-7" @click.prevent="onClear(true); selectedProduct = null" x-show="selectedProduct"
+              >Clear</a
+            >
+          </div>
+          <input
+            type="text"
+            class="input"
+            :class="{ 'error': errors.selectedProduct }"
+            placeholder="Select product"
+            x-model="search"
+            @focus="onFocus()"
+            @input.debounce.500ms="fetchResults(false); selectedProduct = null"
+          />
+          <ul
+            class="dropdown mt-1 p-2"
+            x-show="open"
+            x-transition
+            @scroll="onScroll($event)"
+            x-ref="dropdown"
+          >
+            <template x-for="result in results">
+              <li
+                x-text="result.title"
+                @click="selectedProduct = result; search = result.title; onClear()"
+              ></li>
+            </template>
+            <li x-show="results.length === 0 && !isLoading" class="helper-item">No results</li>
+            <li x-show="isLoading" class="helper-item">
+              <div class="is-flex is-justify-content-center">
+                <div class="loader"></div>
+              </div>
+            </li>
+          </ul>
+          <p class="has-text-danger is-size-7" x-show="errors.selectedProduct" x-text="errors.selectedProduct"></p>
+        </div>
+        
+        <div
+          class="is-relative mb-5"
+          x-data="asyncautocomplete('https://dummyjson.com/posts', 'posts')"
+          @click.outside="onClear()"
+        >
+          <div
+            class="is-flex is-justify-content-space-between is-align-items-center"
+          >
+            <p>Product</p>
+            <a href="#" class="is-size-7" @click.prevent="onClear(true); selectedPost = null" x-show="selectedPost"
+              >Clear</a
+            >
+          </div>
+          <input
+            type="text"
+            class="input"
+            :class="{ 'error': errors.selectedPost }"
+            placeholder="Select post"
+            x-model="search"
+            @focus="onFocus()"
+            @input.debounce.500ms="fetchResults(false); selectedPost = null"
+          />
+          <ul
+            class="dropdown mt-1 p-2"
+            x-show="open"
+            x-transition
+            @scroll="onScroll($event)"
+            x-ref="dropdown"
+          >
+            <template x-for="result in results">
+              <li
+                x-text="result.title"
+                @click="selectedPost = result; search = result.title; onClear()"
+              ></li>
+            </template>
+            <li x-show="results.length === 0 && !isLoading" class="helper-item">No results</li>
+            <li x-show="isLoading" class="helper-item">
+              <div class="is-flex is-justify-content-center">
+                <div class="loader"></div>
+              </div>
+            </li>
+          </ul>
+          <p class="has-text-danger is-size-7" x-show="errors.selectedPost" x-text="errors.selectedPost"></p>
+        </div>
+
+        <div class="mb-5">
+          <p>Name</p>
+          <input type="text" class="input" :class="{ 'error': errors.name }" placeholder="Your name" x-model="name" name="name">
+          <p class="has-text-danger is-size-7" x-show="errors.name" x-text="errors.name"></p>
+        </div>
+
+        <button class="is-primary button">Submit</button>
+      </form>
+    </div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
